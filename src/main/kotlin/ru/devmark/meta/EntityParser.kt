@@ -4,11 +4,14 @@ class EntityParser {
 
     fun parse(sourceLines: List<String>): Entity {
         var entityName = ""
+        var basePackage = ""
         val fields = mutableListOf<Field>()
         for (line in sourceLines) {
             if (line.isNotBlank()) {
                 val parts = line.trim().split("\\s+".toRegex())
-                if (parts[0] == "data" && parts[1] == "class") {
+                if (parts[0] == "package") {
+                    basePackage = parts[1]
+                } else if (parts[0] == "data" && parts[1] == "class") {
                     entityName = parts[2]
                     if (entityName.endsWith("(")) {
                         entityName = entityName.substring(0, entityName.length - 1)
@@ -19,6 +22,7 @@ class EntityParser {
             }
         }
         return Entity(
+            basePackage = basePackage,
             name = entityName,
             fields = fields,
         )

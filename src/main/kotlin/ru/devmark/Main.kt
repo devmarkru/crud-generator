@@ -2,7 +2,10 @@ package ru.devmark
 
 import ru.devmark.generator.EntityGenerator
 import ru.devmark.generator.RepoGenerator
+import ru.devmark.generator.RepoImplGenerator
 import ru.devmark.generator.ServiceGenerator
+import ru.devmark.generator.ServiceImplGenerator
+import ru.devmark.generator.ServiceTestGenerator
 import ru.devmark.meta.EntityParser
 import java.nio.file.Files
 import java.nio.file.Path
@@ -16,7 +19,14 @@ fun main(args: Array<String>) {
     val lines = Files.readAllLines(Path.of(basePath + "entity.txt"))
     println("Parsing entity description.")
     val entity = EntityParser().parse(lines)
-    val generators = listOf(EntityGenerator(), RepoGenerator(), ServiceGenerator())
+    val generators = listOf(
+        EntityGenerator(),
+        RepoGenerator(),
+        RepoImplGenerator(),
+        ServiceGenerator(),
+        ServiceImplGenerator(),
+        ServiceTestGenerator(),
+    )
     println("Begin source files generation")
     generators.forEach { generator ->
         Files.writeString(Path.of(basePath + generator.getFileName(entity)), generator.generate(entity))

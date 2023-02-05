@@ -1,22 +1,12 @@
-import org.springframework.stereotype.Service
+package BASE_PACKAGE.service
 
-@Service
-class ENTITYService(
-    private val CC_ENTITYRepository: ENTITYRepository,
-) {
+import BASE_PACKAGE.model.ENTITYEntity
 
-    fun getAll(): List<ENTITYEntity> =
-        CC_ENTITYRepository.getAllOrderById()
+interface ENTITYService {
 
-    fun getById(id: Int): ENTITYEntity =
-        CC_ENTITYRepository.findById(id)
-            ?: throw RuntimeException("ENTITY with id = $id not found!")
+    fun getAll(): List<ENTITYEntity>
 
-    fun save(entity: ENTITYEntity) {
-        if (entity.id == 0) {
-            CC_ENTITYRepository.insert(entity)
-        } else {
-            CC_ENTITYRepository.update(entity)
-        }
-    }
+    fun getById(id: Int): ENTITYEntity
+
+    fun save(entity: ENTITYEntity)
 }

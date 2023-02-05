@@ -1,50 +1,14 @@
-import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.stereotype.Repository
+package BASE_PACKAGE.repository
 
-@Repository
-class ENTITYRepository(
-    private val jdbcTemplate: NamedParameterJdbcTemplate,
-) {
+import BASE_PACKAGE.model.ENTITYEntity
 
-    fun getAllOrderById(): List<ENTITYEntity> =
-        jdbcTemplate.query(
-            "select id, FIELD_NAMES from SNAKE_ENTITY order by id",
-            ROW_MAPPER
-        )
+interface ENTITYRepository {
 
-    fun findById(id: Int): ENTITYEntity? =
-        jdbcTemplate.query(
-            "select id, FIELD_NAMES from SNAKE_ENTITY where id = :id",
-            mapOf("id" to id),
-            ROW_MAPPER
-        ).firstOrNull()
+    fun getAllOrderById(): List<ENTITYEntity>
 
-    fun insert(entity: ENTITYEntity) {
-        jdbcTemplate.update(
-            "insert into SNAKE_ENTITY (FIELD_NAMES) values (FIELD_VALUES)",
-            mapOf(
-                FIELD_MAPPING
-            )
-        )
-    }
+    fun findById(id: Int): ENTITYEntity?
 
-    fun update(entity: ENTITYEntity) {
-        jdbcTemplate.update(
-            "update SNAKE_ENTITY set FIELD_NAMES_VALUES where id = :id",
-            mapOf(
-                "id" to entity.id,
-                FIELD_MAPPING
-            )
-        )
-    }
+    fun insert(entity: ENTITYEntity)
 
-    private companion object {
-        val ROW_MAPPER = RowMapper { rs, _ ->
-            ENTITYEntity(
-                id = rs.getInt("id"),
-                ROW_MAPPER_FIELDS
-            )
-        }
-    }
+    fun update(entity: ENTITYEntity)
 }
