@@ -1,5 +1,7 @@
 package BASE_PACKAGE.service.impl
 
+import BASE_PACKAGE.model.ENTITYEntity
+import BASE_PACKAGE.repository.ENTITYRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
@@ -8,9 +10,6 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import BASE_PACKAGE.model.ENTITYEntity
-import BASE_PACKAGE.repository.ENTITYRepository
-import java.time.LocalDateTime
 
 @ExtendWith(MockKExtension::class)
 class ENTITYServiceTest {
@@ -77,6 +76,11 @@ class ENTITYServiceTest {
     @Test
     fun `When entity id specified on save then update existing record`() {
         val entity = getEntity(123)
+
+        every {
+            repository.findById(123)
+        } returns entity
+
         service.save(entity)
 
         verify(exactly = 0) {
@@ -88,7 +92,7 @@ class ENTITYServiceTest {
     }
 
     private fun getEntity(id: Int) =
-        PostEntity(
+        ENTITYEntity(
             id = id,
             FIELD_VALUES
         )

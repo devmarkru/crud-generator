@@ -5,6 +5,7 @@ import BASE_PACKAGE.repository.ENTITYRepository
 import BASE_PACKAGE.service.ENTITYService
 import mu.KLogging
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ENTITYServiceImpl(
@@ -25,11 +26,13 @@ class ENTITYServiceImpl(
             ?: throw RuntimeException("ENTITY with id = $id not found!")
     }
 
+    @Transactional
     override fun save(entity: ENTITYEntity) {
         logger.info { "Saving ENTITY: $entity." }
         if (entity.id == 0) {
             CC_ENTITYRepository.insert(entity)
         } else {
+            getById(entity.id)
             CC_ENTITYRepository.update(entity)
         }
     }
