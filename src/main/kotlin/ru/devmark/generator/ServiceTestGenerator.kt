@@ -15,6 +15,7 @@ class ServiceTestGenerator : CodeGenerator {
         val rowMapperFields = entity.fields.mapIndexed { index, field ->
             val value = when (field.type) {
                 FieldType.INT -> "${field.name} = ${100 * index + 1},"
+                FieldType.LONG -> "${field.name} = ${100 * index + 1}L,"
                 FieldType.STRING -> "${field.name} = \"${field.name}\","
                 FieldType.BOOL -> "${field.name} = true,"
                 FieldType.DATE_TIME -> "${field.name} = LocalDateTime.now(),"

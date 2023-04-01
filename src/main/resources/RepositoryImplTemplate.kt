@@ -3,7 +3,7 @@ package BASE_PACKAGE.repository.impl
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import BASE_PACKAGE.model.ENTITYEntity
+import BASE_PACKAGE.entity.ENTITYEntity
 import BASE_PACKAGE.repository.ENTITYRepository
 
 @Repository

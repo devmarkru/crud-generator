@@ -1,6 +1,6 @@
 package BASE_PACKAGE.repository
 
-import BASE_PACKAGE.model.ENTITYEntity
+import BASE_PACKAGE.entity.ENTITYEntity
 
 interface ENTITYRepository {
 

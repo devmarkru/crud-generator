@@ -1,6 +1,6 @@
 package BASE_PACKAGE.service.impl
 
-import BASE_PACKAGE.model.ENTITYEntity
+import BASE_PACKAGE.entity.ENTITYEntity
 import BASE_PACKAGE.repository.ENTITYRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

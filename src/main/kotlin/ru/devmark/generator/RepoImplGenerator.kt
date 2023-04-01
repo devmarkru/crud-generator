@@ -26,6 +26,7 @@ class RepoImplGenerator : CodeGenerator {
         val rowMapperFields = entity.fields.map { field ->
             val methodName = when (field.type) {
                 FieldType.INT -> "getInt(FIELD)"
+                FieldType.LONG -> "getLong(FIELD)"
                 FieldType.STRING -> "getString(FIELD)"
                 FieldType.BOOL -> "getBoolean(FIELD)"
                 FieldType.DATE_TIME -> "getTimestamp(FIELD).toLocalDateTime()"

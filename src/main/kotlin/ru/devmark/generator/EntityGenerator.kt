@@ -10,7 +10,7 @@ class EntityGenerator : CodeGenerator {
 
     override fun generate(entity: Entity): String {
         val code = StringBuilder()
-        code.appendLine("package ${entity.basePackage}.model")
+        code.appendLine("package ${entity.basePackage}.entity")
         code.appendLine()
         if (entity.fields.any { it.type == FieldType.DATE_TIME }) {
             code.appendLine("import java.time.LocalDateTime")

@@ -1,6 +1,6 @@
 package BASE_PACKAGE.service
 
-import BASE_PACKAGE.model.ENTITYEntity
+import BASE_PACKAGE.entity.ENTITYEntity
 
 interface ENTITYService {
 
