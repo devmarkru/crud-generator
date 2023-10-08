@@ -6,7 +6,9 @@ interface ENTITYService {
 
     fun getAll(): List<ENTITYEntity>
 
+    fun findById(id: Int): ENTITYEntity?
+
     fun getById(id: Int): ENTITYEntity
 
-    fun save(entity: ENTITYEntity)
+    fun save(entity: ENTITYEntity): Int
 }

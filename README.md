@@ -1,5 +1,5 @@
 # CRUD generator
-Утилита позволяет генерировать компоненты (сервисный слой, репозиторий) для типового Spring-проекта, работающего с БД.
+Утилита позволяет генерировать компоненты (сервисный слой, репозиторий и т.д.) для типового **Spring**-проекта, работающего с БД через **JDBC API**.
 
 Пример описания исходной сущности:
 
@@ -9,8 +9,8 @@ package ru.devmark
 data class Post(
     val userId: Int,
     val text: String,
-    val created: LocalDateTime,
-    val background: String,
+    val createdDate: LocalDateTime,
+    val background: String?,
 )
 ```
 

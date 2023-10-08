@@ -2,30 +2,33 @@ package ru.devmark.meta
 
 class EntityParser {
 
-    fun parse(sourceLines: List<String>): Entity {
+    fun parse(sourceLines: List<String>): List<Entity> {
+        val entities = mutableMapOf<String, Entity>()
         var entityName = ""
         var basePackage = ""
-        val fields = mutableListOf<Field>()
         for (line in sourceLines) {
             if (line.isNotBlank()) {
                 val parts = line.trim().split("\\s+".toRegex())
-                if (parts[0] == "package") {
-                    basePackage = parts[1]
-                } else if (parts[0] == "data" && parts[1] == "class") {
-                    entityName = parts[2]
-                    if (entityName.endsWith("(")) {
-                        entityName = entityName.substring(0, entityName.length - 1)
+                when {
+                    parts.first() == "package" -> basePackage = parts[1]
+                    parts.first() == "data" && parts[1] == "class" -> {
+                        entityName = parts[2]
+                        if (entityName.endsWith("(")) {
+                            entityName = entityName.substring(0, entityName.length - 1)
+                        }
                     }
-                } else if (parts.first() in setOf("val", "var")) {
-                    fields += getField(parts)
+
+                    parts.first() in setOf("val", "var") -> {
+                        entities
+                            .getOrPut(entityName) { Entity(basePackage = basePackage, name = entityName) }
+                            .fields += getField(parts)
+                    }
+
+                    parts.first() == ")" -> entityName = ""
                 }
             }
         }
-        return Entity(
-            basePackage = basePackage,
-            name = entityName,
-            fields = fields,
-        )
+        return entities.values.toList()
     }
 
     private fun getField(parts: List<String>): Field {
@@ -34,7 +37,7 @@ class EntityParser {
             name = name.substring(0, name.length - 1)
         }
         val typeText = parts[2]
-        val nullable = typeText.endsWith("?")
+        val nullable = typeText.contains("?")
         val type = FieldType.values()
             .firstOrNull { typeText.startsWith(it.kotlinType) }
             ?: throw RuntimeException("Unknown field type: $typeText")

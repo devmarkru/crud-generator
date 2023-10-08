@@ -19,9 +19,15 @@ class EntityGenerator : CodeGenerator {
         code.appendLine("data class ${entity.name}Entity(")
         code.appendLine("    val id: Int = 0,")
         entity.fields.forEach { field ->
-            code.appendLine("    val ${field.name}: ${field.type.kotlinType},")
+            code.append("    val ${field.name}: ${field.type.kotlinType}")
+            if (field.nullable) {
+                code.append("?")
+            }
+            field.type.defaultValue
+                ?.let { defaultValue -> code.append(" = ").append(defaultValue) }
+            code.appendLine(",")
         }
-        code.appendLine(")")
+        code.appendLine(")").appendLine()
         return code.toString()
     }
 }

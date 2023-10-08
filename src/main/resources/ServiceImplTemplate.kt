@@ -20,6 +20,11 @@ class ENTITYServiceImpl(
             }
     }
 
+    override fun findById(id: Int): ENTITYEntity? {
+        logger.info { "Find ENTITY by id = $id." }
+        return CC_ENTITYRepository.findById(id)
+    }
+
     override fun getById(id: Int): ENTITYEntity {
         logger.info { "Get ENTITY by id = $id." }
         return CC_ENTITYRepository.findById(id)
@@ -27,13 +32,14 @@ class ENTITYServiceImpl(
     }
 
     @Transactional
-    override fun save(entity: ENTITYEntity) {
+    override fun save(entity: ENTITYEntity): Int {
         logger.info { "Saving ENTITY: $entity." }
-        if (entity.id == 0) {
+        return if (entity.id == 0) {
             CC_ENTITYRepository.insert(entity)
         } else {
             getById(entity.id)
             CC_ENTITYRepository.update(entity)
+            entity.id
         }
     }
 

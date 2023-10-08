@@ -1,7 +1,9 @@
 package BASE_PACKAGE.repository.impl
 
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Repository
 import BASE_PACKAGE.entity.ENTITYEntity
 import BASE_PACKAGE.repository.ENTITYRepository
@@ -24,13 +26,19 @@ class ENTITYRepositoryImpl(
             ROW_MAPPER
         ).firstOrNull()
 
-    override fun insert(entity: ENTITYEntity) {
+    override fun insert(entity: ENTITYEntity): Int {
+        val keyHolder = GeneratedKeyHolder()
         jdbcTemplate.update(
             "insert into SNAKE_ENTITY (FIELD_NAMES) values (FIELD_VALUES)",
-            mapOf(
+            MapSqlParameterSource(
+                mapOf(
                 FIELD_MAPPING
-            )
+                )
+            ),
+            keyHolder,
+            arrayOf("id"),
         )
+        return keyHolder.key as Int
     }
 
     override fun update(entity: ENTITYEntity) {

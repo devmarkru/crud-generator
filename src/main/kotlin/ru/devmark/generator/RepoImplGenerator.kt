@@ -20,16 +20,28 @@ class RepoImplGenerator : CodeGenerator {
         code = code.replace("FIELD_VALUES", entity.fields.joinToString { ":${it.name}" })
         code = code.replace(
             "                FIELD_MAPPING",
-            entity.fields.joinToString(separator = System.lineSeparator()) { "                \"${it.name}\" to entity.${it.name}," }
+            entity.fields.joinToString(separator = System.lineSeparator()) { "                    \"${it.name}\" to entity.${it.name}," }
         )
 
         val rowMapperFields = entity.fields.map { field ->
-            val methodName = when (field.type) {
-                FieldType.INT -> "getInt(FIELD)"
-                FieldType.LONG -> "getLong(FIELD)"
-                FieldType.STRING -> "getString(FIELD)"
-                FieldType.BOOL -> "getBoolean(FIELD)"
-                FieldType.DATE_TIME -> "getTimestamp(FIELD).toLocalDateTime()"
+            val methodName = if (field.nullable) {
+                when (field.type) {
+                    FieldType.INT -> "getIntOrNull(FIELD)"
+                    FieldType.LONG -> "getLongOrNull(FIELD)"
+                    FieldType.STRING -> "getString(FIELD)"
+                    FieldType.BOOL -> "getBooleanOrNull(FIELD)"
+                    FieldType.BIG_DECIMAL -> "getBigDecimal(FIELD)"
+                    FieldType.DATE_TIME -> "getTimestamp(FIELD)?.toLocalDateTime()"
+                }
+            } else {
+                when (field.type) {
+                    FieldType.INT -> "getInt(FIELD)"
+                    FieldType.LONG -> "getLong(FIELD)"
+                    FieldType.STRING -> "getString(FIELD)"
+                    FieldType.BOOL -> "getBoolean(FIELD)"
+                    FieldType.BIG_DECIMAL -> "getBigDecimal(FIELD)"
+                    FieldType.DATE_TIME -> "getTimestamp(FIELD).toLocalDateTime()"
+                }
             }
             val mapper = methodName.replace("FIELD", "\"${field.name.toSnakeCase()}\"")
             "                ${field.name} = rs.$mapper,"

@@ -8,7 +8,7 @@ interface ENTITYRepository {
 
     fun findById(id: Int): ENTITYEntity?
 
-    fun insert(entity: ENTITYEntity)
+    fun insert(entity: ENTITYEntity): Int
 
     fun update(entity: ENTITYEntity)
 }

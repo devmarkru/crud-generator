@@ -18,6 +18,7 @@ class ServiceTestGenerator : CodeGenerator {
                 FieldType.LONG -> "${field.name} = ${100 * index + 1}L,"
                 FieldType.STRING -> "${field.name} = \"${field.name}\","
                 FieldType.BOOL -> "${field.name} = true,"
+                FieldType.BIG_DECIMAL -> "\"${field.name} = ${100 * index + 1}.00\","
                 FieldType.DATE_TIME -> "${field.name} = LocalDateTime.now(),"
             }
             "            $value"
