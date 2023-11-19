@@ -7,11 +7,11 @@ import java.nio.file.Path
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
-        println("Please, specify path to the file entities.txt with / at the end.")
+        println("Please, specify path to the file _Entities.kt with / at the end.")
         return
     }
     val basePath = args[0]
-    val lines = Files.readAllLines(Path.of(basePath + "entities.txt"))
+    val lines = Files.readAllLines(Path.of(basePath + "_Entities.kt"))
     println("Parsing entity description.")
     val entities = EntityParser().parse(lines)
     val generators = listOf(
