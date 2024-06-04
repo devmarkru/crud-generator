@@ -12,10 +12,13 @@ class EntityGenerator : CodeGenerator {
         val code = StringBuilder()
         code.appendLine("package ${entity.basePackage}.entity")
         code.appendLine()
+        if (entity.fields.any { it.type == FieldType.BIG_DECIMAL }) {
+            code.appendLine("import java.math.BigDecimal")
+        }
         if (entity.fields.any { it.type == FieldType.DATE_TIME }) {
             code.appendLine("import java.time.LocalDateTime")
-            code.appendLine()
         }
+        code.appendLine()
         code.appendLine("data class ${entity.name}Entity(")
         code.appendLine("    val id: Int = 0,")
         entity.fields.forEach { field ->
@@ -27,7 +30,7 @@ class EntityGenerator : CodeGenerator {
                 ?.let { defaultValue -> code.append(" = ").append(defaultValue) }
             code.appendLine(",")
         }
-        code.appendLine(")").appendLine()
+        code.appendLine(")")
         return code.toString()
     }
 }
