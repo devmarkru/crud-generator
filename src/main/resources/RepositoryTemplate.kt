@@ -11,4 +11,6 @@ interface ENTITYRepository {
     fun insert(entity: ENTITYEntity): Int
 
     fun update(entity: ENTITYEntity)
+
+    fun deleteById(id: Int)
 }

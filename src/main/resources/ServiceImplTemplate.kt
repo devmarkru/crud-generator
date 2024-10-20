@@ -1,12 +1,3 @@
-package BASE_PACKAGE.service.impl
-
-import BASE_PACKAGE.entity.ENTITYEntity
-import BASE_PACKAGE.repository.ENTITYRepository
-import BASE_PACKAGE.service.ENTITYService
-import mu.KLogging
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-
 @Service
 class ENTITYServiceImpl(
     private val CC_ENTITYRepository: ENTITYRepository,
@@ -41,6 +32,11 @@ class ENTITYServiceImpl(
             CC_ENTITYRepository.update(entity)
             entity.id
         }
+    }
+
+    override fun deleteById(id: Int) {
+        logger.info { "Deleting ENTITY by id = $id." }
+        CC_ENTITYRepository.deleteById(id)
     }
 
     private companion object : KLogging()

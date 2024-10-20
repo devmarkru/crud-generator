@@ -4,26 +4,51 @@ import ru.devmark.meta.Entity
 import ru.devmark.meta.FieldType
 import ru.devmark.util.toSnakeCase
 
-class RepoImplGenerator : CodeGenerator {
+class RepoImplGenerator : KotlinCodeGenerator() {
 
     override fun getFileName(entity: Entity): String =
         "${entity.name}RepositoryImpl.kt"
 
-    override fun generate(entity: Entity): String {
-        var code = String((this.javaClass.getResourceAsStream("/RepositoryImplTemplate.kt").readAllBytes()))
-        code = code.replace("BASE_PACKAGE", entity.basePackage)
+    override fun getPackageName(entity: Entity): String =
+        "${entity.basePackage}.repository.impl"
+
+    override fun getTemplateName(): String = "RepositoryImplTemplate.kt"
+
+    override fun processTemplate(template: String, entity: Entity): String {
+        var code = template
         code = code.replace("SNAKE_ENTITY", entity.name.toSnakeCase())
         code = code.replace("ENTITY", entity.name)
-        code =
-            code.replace("FIELD_NAMES_VALUES", entity.fields.joinToString { "${it.name.toSnakeCase()} = :${it.name}" })
-        code = code.replace("FIELD_NAMES", entity.fields.joinToString { it.name.toSnakeCase() })
-        code = code.replace("FIELD_VALUES", entity.fields.joinToString { ":${it.name}" })
+
+        addImports(entity)
+
         code = code.replace(
-            "                FIELD_MAPPING",
-            entity.fields.joinToString(separator = System.lineSeparator()) { "                    \"${it.name}\" to entity.${it.name}," }
+            "                    FIELD_NAMES_VALUES",
+            entity.fields.joinToString(
+                separator = ",$newLine",
+            ) { "                    ${it.name.toSnakeCase()} = :${it.name}" }
         )
 
-        val rowMapperFields = entity.fields.map { field ->
+        code = code.replace(
+            "                    FIELD_NAMES",
+            entity.fields.joinToString(
+                separator = ",$newLine",
+            ) { "                    ${it.name.toSnakeCase()}" })
+
+        code = code.replace(
+            "                    FIELD_VALUES",
+            entity.fields.joinToString(
+                separator = ",$newLine",
+            ) { "                    :${it.name}" }
+        )
+
+        code = code.replace(
+            "                    FIELD_MAPPING",
+            entity.fields.joinToString(
+                separator = newLine,
+            ) { "                    \"${it.name}\" to entity.${it.name}," }
+        )
+
+        val rowMapperFields = entity.fields.joinToString(separator = System.lineSeparator()) { field ->
             val methodName = if (field.nullable) {
                 when (field.type) {
                     FieldType.INT -> "getIntOrNull(FIELD)"
@@ -45,8 +70,32 @@ class RepoImplGenerator : CodeGenerator {
             }
             val mapper = methodName.replace("FIELD", "\"${field.name.toSnakeCase()}\"")
             "                ${field.name} = rs.$mapper,"
-        }.joinToString(separator = System.lineSeparator())
+        }
         code = code.replace("                ROW_MAPPER_FIELDS", rowMapperFields)
         return code
+    }
+
+    private fun addImports(entity: Entity) {
+        import("org.springframework.jdbc.core.RowMapper")
+        import("org.springframework.jdbc.core.namedparam.MapSqlParameterSource")
+        import("org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate")
+        import("org.springframework.jdbc.support.GeneratedKeyHolder")
+        import("org.springframework.stereotype.Repository")
+
+        import("${entity.basePackage}.entity.${entity.name}Entity")
+        import("${entity.basePackage}.repository.${entity.name}Repository")
+
+        entity.importNullableType(FieldType.BOOL)
+        entity.importNullableType(FieldType.INT)
+        entity.importNullableType(FieldType.LONG)
+    }
+
+    private fun Entity.importNullableType(fieldType: FieldType) {
+        this.fields.firstOrNull { it.type == fieldType && it.nullable }
+            ?.let { field -> import("${this.basePackage}.util.get${field.type.kotlinType}OrNull") }
+    }
+
+    private companion object {
+        val newLine: String = System.lineSeparator()
     }
 }

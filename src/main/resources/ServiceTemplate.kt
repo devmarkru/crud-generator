@@ -11,4 +11,6 @@ interface ENTITYService {
     fun getById(id: Int): ENTITYEntity
 
     fun save(entity: ENTITYEntity): Int
+
+    fun deleteById(id: Int)
 }

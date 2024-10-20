@@ -1,5 +1,5 @@
 # CRUD generator
-Утилита позволяет генерировать компоненты (сервисный слой, репозиторий и т.д.) для типового **Spring**-проекта, работающего с БД через **JDBC API**.
+Утилита позволяет генерировать компоненты для **Spring** (сервис, репозиторий, юнит-тесты) на **Kotlin** для типового проекта, работающего с БД через **JDBC API**.
 
 Пример описания исходной сущности в файле `_Entities.kt`:
 
@@ -14,7 +14,7 @@ data class Post(
 )
 ```
 
-Здесь пакет указывается базовый для всего проекта. Поле для id сущности указывать не нужно - он добавится автоматически. На выходе все файлы будут распределены в разные дочерние пакеты.
+Здесь указывается **базовый пакет** для всего проекта. Поле для id сущности указывать не нужно - он добавится автоматически.
 
 При запуске в первом параметре следует указать папку, где лежит описание исходной сущности.
 
@@ -24,9 +24,31 @@ data class Post(
 * Сервисный слой (с логированием)
 * Юнит-тесты для сервисного слоя
 
-В целевой проект также надо будет добавить следующие зависимости:
+Для каждого компонента уже будут прописаны пакеты согласно схеме:
+
+```
+src
+└── main
+    └── kotlin
+        └── ru
+            └── devmark
+                ├── entity
+                ├── repository
+                │   └── impl
+                ├── service
+                │   └──impl
+                └── util
+```
+
+Проверьте, что в вашем gradle-проекте подключены следующие зависимости:
 
 ```kotlin
-implementation("io.github.microutils:kotlin-logging:1.12.5")
-testImplementation("io.mockk:mockk:1.13.4")
+implementation("org.springframework.boot:spring-boot-starter-jdbc")
+implementation("org.springframework.boot:spring-boot-starter-web")
+implementation("io.github.microutils:kotlin-logging:3.0.5")
+
+testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+implementation("io.mockk:mockk:1.13.13")
+
+runtimeOnly("org.postgresql:postgresql")
 ```

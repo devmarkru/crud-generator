@@ -1,33 +1,33 @@
 package ru.devmark.generator
 
 import ru.devmark.meta.Entity
-import ru.devmark.meta.FieldType
 
-class EntityGenerator : CodeGenerator {
+class EntityGenerator : KotlinCodeGenerator() {
 
     override fun getFileName(entity: Entity): String =
         "${entity.name}Entity.kt"
 
-    override fun generate(entity: Entity): String {
+    override fun getPackageName(entity: Entity): String = "${entity.basePackage}.entity"
+
+    override fun getTemplateName(): String? = null
+
+    override fun processTemplate(template: String, entity: Entity): String {
         val code = StringBuilder()
-        code.appendLine("package ${entity.basePackage}.entity")
-        code.appendLine()
-        if (entity.fields.any { it.type == FieldType.BIG_DECIMAL }) {
-            code.appendLine("import java.math.BigDecimal")
-        }
-        if (entity.fields.any { it.type == FieldType.DATE_TIME }) {
-            code.appendLine("import java.time.LocalDateTime")
-        }
-        code.appendLine()
+
+        entity.fields
+            .mapNotNull { it.type.requiredImport }
+            .forEach { import(it) }
+
         code.appendLine("data class ${entity.name}Entity(")
         code.appendLine("    val id: Int = 0,")
         entity.fields.forEach { field ->
             code.append("    val ${field.name}: ${field.type.kotlinType}")
             if (field.nullable) {
                 code.append("?")
+            } else {
+                field.type.defaultValue
+                    ?.let { defaultValue -> code.append(" = ").append(defaultValue) }
             }
-            field.type.defaultValue
-                ?.let { defaultValue -> code.append(" = ").append(defaultValue) }
             code.appendLine(",")
         }
         code.appendLine(")")

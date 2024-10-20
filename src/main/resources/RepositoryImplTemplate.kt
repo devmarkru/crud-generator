@@ -1,13 +1,3 @@
-package BASE_PACKAGE.repository.impl
-
-import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.support.GeneratedKeyHolder
-import org.springframework.stereotype.Repository
-import BASE_PACKAGE.entity.ENTITYEntity
-import BASE_PACKAGE.repository.ENTITYRepository
-
 @Repository
 class ENTITYRepositoryImpl(
     private val jdbcTemplate: NamedParameterJdbcTemplate,
@@ -15,13 +5,25 @@ class ENTITYRepositoryImpl(
 
     override fun getAllOrderById(): List<ENTITYEntity> =
         jdbcTemplate.query(
-            "select id, FIELD_NAMES from SNAKE_ENTITY order by id",
+            """
+                select
+                    id,
+                    FIELD_NAMES
+                from SNAKE_ENTITY
+                order by id
+            """.trimIndent(),
             ROW_MAPPER
         )
 
     override fun findById(id: Int): ENTITYEntity? =
         jdbcTemplate.query(
-            "select id, FIELD_NAMES from SNAKE_ENTITY where id = :id",
+            """
+                select
+                    id, 
+                    FIELD_NAMES 
+                from SNAKE_ENTITY
+                where id = :id
+            """.trimIndent(),
             mapOf("id" to id),
             ROW_MAPPER
         ).firstOrNull()
@@ -29,10 +31,16 @@ class ENTITYRepositoryImpl(
     override fun insert(entity: ENTITYEntity): Int {
         val keyHolder = GeneratedKeyHolder()
         jdbcTemplate.update(
-            "insert into SNAKE_ENTITY (FIELD_NAMES) values (FIELD_VALUES)",
+            """
+                insert into SNAKE_ENTITY (
+                    FIELD_NAMES
+                ) values (
+                    FIELD_VALUES
+                )
+            """.trimIndent(),
             MapSqlParameterSource(
                 mapOf(
-                FIELD_MAPPING
+                    FIELD_MAPPING
                 )
             ),
             keyHolder,
@@ -43,11 +51,27 @@ class ENTITYRepositoryImpl(
 
     override fun update(entity: ENTITYEntity) {
         jdbcTemplate.update(
-            "update SNAKE_ENTITY set FIELD_NAMES_VALUES where id = :id",
-            mapOf(
-                "id" to entity.id,
-                FIELD_MAPPING
+            """
+                update SNAKE_ENTITY set
+                    FIELD_NAMES_VALUES
+                where id = :id
+            """.trimIndent(),
+            MapSqlParameterSource(
+                mapOf(
+                    "id" to entity.id,
+                    FIELD_MAPPING
+                )
             )
+        )
+    }
+
+    override fun deleteById(id: Int) {
+        jdbcTemplate.update(
+            """
+                delete from SNAKE_ENTITY
+                where id = :id
+            """.trimIndent(),
+            mapOf("id" to id)
         )
     }
 

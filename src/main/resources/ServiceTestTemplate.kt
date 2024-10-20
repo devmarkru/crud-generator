@@ -1,18 +1,3 @@
-package BASE_PACKAGE.service.impl
-
-import BASE_PACKAGE.entity.ENTITYEntity
-import BASE_PACKAGE.repository.ENTITYRepository
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
-import java.math.BigDecimal
-import java.time.LocalDateTime
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-
 @ExtendWith(MockKExtension::class)
 class ENTITYServiceTest {
 
@@ -90,6 +75,15 @@ class ENTITYServiceTest {
         }
         verify(exactly = 1) {
             repository.update(entity)
+        }
+    }
+
+    @Test
+    fun `When deleting entity then delete entity by id`() {
+        service.deleteById(123)
+
+        verify(exactly = 1) {
+            repository.deleteById(123)
         }
     }
 
