@@ -34,9 +34,7 @@ src
             └── devmark
                 ├── entity
                 ├── repository
-                │   └── impl
                 ├── service
-                │   └──impl
                 └── util
 ```
 

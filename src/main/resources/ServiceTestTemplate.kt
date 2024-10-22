@@ -5,7 +5,7 @@ class ENTITYServiceTest {
     private lateinit var repository: ENTITYRepository
 
     @InjectMockKs
-    private lateinit var service: ENTITYServiceImpl
+    private lateinit var service: ENTITYService
 
     @Test
     fun `When get all then returns list of entity`() {

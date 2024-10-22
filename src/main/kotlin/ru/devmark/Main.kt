@@ -1,6 +1,10 @@
 package ru.devmark
 
-import ru.devmark.generator.*
+import ru.devmark.generator.EntityGenerator
+import ru.devmark.generator.RepoGenerator
+import ru.devmark.generator.ResultSetUtilGenerator
+import ru.devmark.generator.ServiceGenerator
+import ru.devmark.generator.ServiceTestGenerator
 import ru.devmark.meta.EntityParser
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,9 +21,7 @@ fun main(args: Array<String>) {
     val generators = listOf(
         EntityGenerator(),
         RepoGenerator(),
-        RepoImplGenerator(),
         ServiceGenerator(),
-        ServiceImplGenerator(),
         ServiceTestGenerator(),
     )
     println("Begin source files generation")

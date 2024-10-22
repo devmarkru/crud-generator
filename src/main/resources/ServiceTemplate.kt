@@ -1,16 +1,43 @@
-package BASE_PACKAGE.service
+@Service
+class ENTITYService(
+    private val CC_ENTITYRepository: ENTITYRepository,
+) {
 
-import BASE_PACKAGE.entity.ENTITYEntity
+    fun getAll(): List<ENTITYEntity> {
+        logger.info { "Get all ENTITYs ordered by id." }
+        return CC_ENTITYRepository.getAllOrderById()
+            .also {
+                logger.info { "Found: ${it.size}." }
+            }
+    }
 
-interface ENTITYService {
+    fun findById(id: Int): ENTITYEntity? {
+        logger.info { "Find ENTITY by id = $id." }
+        return CC_ENTITYRepository.findById(id)
+    }
 
-    fun getAll(): List<ENTITYEntity>
+    fun getById(id: Int): ENTITYEntity {
+        logger.info { "Get ENTITY by id = $id." }
+        return CC_ENTITYRepository.findById(id)
+            ?: throw RuntimeException("ENTITY with id = $id not found!")
+    }
 
-    fun findById(id: Int): ENTITYEntity?
+    @Transactional
+    fun save(entity: ENTITYEntity): Int {
+        logger.info { "Saving ENTITY: $entity." }
+        return if (entity.id == 0) {
+            CC_ENTITYRepository.insert(entity)
+        } else {
+            getById(entity.id)
+            CC_ENTITYRepository.update(entity)
+            entity.id
+        }
+    }
 
-    fun getById(id: Int): ENTITYEntity
+    fun deleteById(id: Int) {
+        logger.info { "Deleting ENTITY by id = $id." }
+        CC_ENTITYRepository.deleteById(id)
+    }
 
-    fun save(entity: ENTITYEntity): Int
-
-    fun deleteById(id: Int)
+    private companion object : KLogging()
 }

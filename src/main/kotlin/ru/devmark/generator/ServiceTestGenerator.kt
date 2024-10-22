@@ -9,7 +9,7 @@ class ServiceTestGenerator : KotlinCodeGenerator() {
         "${entity.name}ServiceTest.kt"
 
     override fun getPackageName(entity: Entity): String =
-        "${entity.basePackage}.service.impl"
+        "${entity.basePackage}.service"
 
     override fun getTemplateName(): String = "ServiceTestTemplate.kt"
 
