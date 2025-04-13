@@ -22,23 +22,23 @@ class RepoGenerator : KotlinCodeGenerator() {
         addImports(entity)
 
         code = code.replace(
-            "                    FIELD_NAMES_VALUES",
+            "                        FIELD_NAMES_VALUES",
             entity.fields.joinToString(
                 separator = ",$newLine",
-            ) { "                    ${it.name.toSnakeCase()} = :${it.name}" }
+            ) { "                        ${it.name.toSnakeCase()} = :${it.name}" }
         )
 
         code = code.replace(
-            "                    FIELD_NAMES",
+            "                        FIELD_NAMES",
             entity.fields.joinToString(
                 separator = ",$newLine",
-            ) { "                    ${it.name.toSnakeCase()}" })
+            ) { "                        ${it.name.toSnakeCase()}" })
 
         code = code.replace(
-            "                    FIELD_VALUES",
+            "                        FIELD_VALUES",
             entity.fields.joinToString(
                 separator = ",$newLine",
-            ) { "                    :${it.name}" }
+            ) { "                        :${it.name}" }
         )
 
         code = code.replace(
@@ -77,8 +77,7 @@ class RepoGenerator : KotlinCodeGenerator() {
 
     private fun addImports(entity: Entity) {
         import("org.springframework.jdbc.core.RowMapper")
-        import("org.springframework.jdbc.core.namedparam.MapSqlParameterSource")
-        import("org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate")
+        import("org.springframework.jdbc.core.simple.JdbcClient")
         import("org.springframework.jdbc.support.GeneratedKeyHolder")
         import("org.springframework.stereotype.Repository")
 

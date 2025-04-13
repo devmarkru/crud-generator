@@ -1,78 +1,82 @@
 @Repository
 class ENTITYRepository(
-    private val jdbcTemplate: NamedParameterJdbcTemplate,
+    private val jdbcClient: JdbcClient,
 ) {
 
     fun getAllOrderById(): List<ENTITYEntity> =
-        jdbcTemplate.query(
-            """
-                select
-                    id,
-                    FIELD_NAMES
-                from SNAKE_ENTITY
-                order by id
-            """.trimIndent(),
-            ROW_MAPPER
-        )
+        jdbcClient
+            .sql(
+                """
+                    select
+                        id,
+                        FIELD_NAMES
+                    from SNAKE_ENTITY
+                    order by id
+                """.trimIndent()
+            )
+            .query(ROW_MAPPER)
+            .list()
 
     fun findById(id: Int): ENTITYEntity? =
-        jdbcTemplate.query(
-            """
-                select
-                    id, 
-                    FIELD_NAMES 
-                from SNAKE_ENTITY
-                where id = :id
-            """.trimIndent(),
-            mapOf("id" to id),
-            ROW_MAPPER
-        ).firstOrNull()
+        jdbcClient
+            .sql(
+                """
+                    select
+                        id, 
+                        FIELD_NAMES 
+                    from SNAKE_ENTITY
+                    where id = :id
+                """.trimIndent()
+            )
+            .param("id" to id)
+            .query(ROW_MAPPER)
+            .list()
+            .firstOrNull()
 
     fun insert(entity: ENTITYEntity): Int {
         val keyHolder = GeneratedKeyHolder()
-        jdbcTemplate.update(
-            """
-                insert into SNAKE_ENTITY (
-                    FIELD_NAMES
-                ) values (
-                    FIELD_VALUES
-                )
-            """.trimIndent(),
-            MapSqlParameterSource(
+        jdbcClient
+            .sql(
+                """
+                    insert into SNAKE_ENTITY (
+                        FIELD_NAMES
+                    ) values (
+                        FIELD_VALUES
+                    )
+                """.trimIndent()
+            )
+            .params(
                 mapOf(
                     FIELD_MAPPING
                 )
-            ),
-            keyHolder,
-            arrayOf("id"),
-        )
+            )
+            .update(keyHolder, "id")
         return keyHolder.key as Int
     }
 
     fun update(entity: ENTITYEntity) {
-        jdbcTemplate.update(
-            """
-                update SNAKE_ENTITY set
-                    FIELD_NAMES_VALUES
-                where id = :id
-            """.trimIndent(),
-            MapSqlParameterSource(
+        jdbcClient
+            .sql(
+                """
+                    update SNAKE_ENTITY set
+                        FIELD_NAMES_VALUES
+                    where id = :id
+                """.trimIndent()
+            )
+            .params(
                 mapOf(
                     "id" to entity.id,
                     FIELD_MAPPING
                 )
             )
-        )
+            .update()
     }
 
     fun deleteById(id: Int) {
-        jdbcTemplate.update(
-            """
-                delete from SNAKE_ENTITY
-                where id = :id
-            """.trimIndent(),
-            mapOf("id" to id)
-        )
+        jdbcClient
+            .sql("delete from SNAKE_ENTITY where id = :id")
+            .param("id" to id)
+            .update()
     }
 
     private companion object {
