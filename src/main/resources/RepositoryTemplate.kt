@@ -28,7 +28,7 @@ class ENTITYRepository(
                     where id = :id
                 """.trimIndent()
             )
-            .param("id" to id)
+            .param("id", id)
             .query(ROW_MAPPER)
             .list()
             .firstOrNull()
@@ -75,7 +75,7 @@ class ENTITYRepository(
     fun deleteById(id: Int) {
         jdbcClient
             .sql("delete from SNAKE_ENTITY where id = :id")
-            .param("id" to id)
+            .param("id", id)
             .update()
     }
 
